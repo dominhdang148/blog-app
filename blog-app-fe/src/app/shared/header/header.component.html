@@ -1,0 +1,21 @@
+<header>
+  <nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+      <a href="/" class="navbar-brand">MyBlog</a>
+      <button
+        class="navbar-toggler"
+        data-bs-toggle="collapse"
+        data-bs-target="#navItems"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse" id="navItems">
+        <ul class="navbar-nav">
+          <li *ngFor="let item of menuItems" class="nav-item">
+            <a class="nav-link" [href]="item.path">{{ item.title }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
