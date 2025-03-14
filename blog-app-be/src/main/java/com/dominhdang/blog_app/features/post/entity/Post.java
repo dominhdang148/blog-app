@@ -11,7 +11,6 @@ import com.dominhdang.blog_app.features.author.entity.Author;
 import com.dominhdang.blog_app.features.category.entity.Category;
 import com.dominhdang.blog_app.features.tag.entity.Tag;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

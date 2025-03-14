@@ -1,6 +1,7 @@
 package com.dominhdang.blog_app.features.post.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dominhdang.blog_app.features.post.dto.PostFormDto;
 import com.dominhdang.blog_app.features.post.dto.PostManageDetailDto;
@@ -9,6 +10,7 @@ import com.dominhdang.blog_app.features.post.service.PostService;
 import com.dominhdang.blog_app.models.ApiResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("api/admin/post")
@@ -34,7 +35,7 @@ public class PostAdminController {
     private PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostManageDetailDto>> createPost(@RequestBody PostFormDto post) {
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> createPost(@Valid @RequestBody PostFormDto post) {
         ApiResponse<PostManageDetailDto> response = this.postService.savePost(post);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -60,8 +61,9 @@ public class PostAdminController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @PutMapping("/{id}")
-    public String putMethodName(@PathVariable UUID id, @RequestBody PostFormDto post) {
+    @PostMapping(value = "{id}/image", consumes = "multipart/form-data")
+    public String uploadImage(@PathVariable UUID id, @RequestParam("imageFile[;w") MultipartFile imageFile) {
         return null;
     }
+
 }

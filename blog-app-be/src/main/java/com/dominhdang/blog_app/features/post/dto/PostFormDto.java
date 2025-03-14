@@ -33,15 +33,13 @@ public class PostFormDto {
     @NotBlank(message = "Post's Url Slug is required")
     private String urlSlug;
 
-    @Length(max = 1000, message = "image_url shouldn't more than 1000 characters")
+    @Length(max = 1000, message = "Image URL shouldn't more than 1000 characters")
     private String imageUrl;
 
     @NotNull(message = "Cateogory is required")
-    @org.hibernate.validator.constraints.UUID(message = "Invalid UUID")
     private UUID categoryId;
 
     @NotNull(message = "Author is required")
-    @org.hibernate.validator.constraints.UUID(message = "Invalid UUID")
     private UUID authorId;
 
     private String tags;
