@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(path = "api/author")
-@Tag(name = "Author Endpoints", description = "Author's endpoints for public access")
+@Tag(name = "Author Endpoints", description = "Author's endpoints ")
 @RequiredArgsConstructor
 public class AuthorController {
     @Autowired

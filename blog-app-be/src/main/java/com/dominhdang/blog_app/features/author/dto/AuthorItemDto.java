@@ -16,4 +16,5 @@ public class AuthorItemDto {
     private String imageUrl;
     private LocalDateTime joinedDate;
     private String email;
+    private String note;
 }

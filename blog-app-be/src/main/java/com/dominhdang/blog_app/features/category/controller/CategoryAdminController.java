@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/admin/category")
-@Tag(name = "Category Admin Endpoints", description = "Category's endpoints for administrator access")
+@Tag(name = "Category Endpoints", description = "Category's endpoints")
 public class CategoryAdminController {
     @Autowired
     private CategoryService categoryService;

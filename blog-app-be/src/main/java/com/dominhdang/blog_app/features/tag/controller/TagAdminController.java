@@ -22,14 +22,13 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/admin/tag")
-@Tag(name = "Tag Admin Endpoints", description = "Tag's endpoints for administrator access")
+@Tag(name = "Tag Endpoints", description = "Tag's endpoints ")
 public class TagAdminController {
     @Autowired
     private TagService tagService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<TagDetailDto>> addTag(@Valid @RequestBody TagFormDto tag) {
-
         ApiResponse<TagDetailDto> response = this.tagService.saveTag(tag);
         return ResponseEntity.status(response.getStatus()).body(response);
 

@@ -17,7 +17,9 @@ public interface PostService {
 
     ApiResponse<PostManageDetailDto> getAdminPostDetail(UUID id);
 
-    ApiResponse<List<PostClientItemDto>> getClientPostList(String name, int currentPage, int pageSize);
+    ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize);
 
-    ApiResponse<List<PostManageItemDto>> getAdminPostList(String name, int currentPage, int pageSize);
+    ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize);
+
+    ApiResponse<?> deletePost(UUID id);
 }

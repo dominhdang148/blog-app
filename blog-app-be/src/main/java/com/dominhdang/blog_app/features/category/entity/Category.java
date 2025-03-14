@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.dominhdang.blog_app.features.post.entity.Post;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +44,6 @@ public class Category {
     @Builder.Default
     private Boolean showOnMenu = false;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Post> posts;
 }

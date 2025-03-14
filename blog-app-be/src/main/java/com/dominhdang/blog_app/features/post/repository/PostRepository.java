@@ -9,5 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.dominhdang.blog_app.features.post.entity.Post;
 
 public interface PostRepository extends JpaRepository<Post, UUID> {
-    Page<Post> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<Post> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    Page<Post> findAllByTitleContainingIgnoreCaseAndPublishedTrue(String title, Pageable pageable);
 }

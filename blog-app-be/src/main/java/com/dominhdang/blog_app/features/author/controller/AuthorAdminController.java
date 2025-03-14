@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/admin/author")
-@Tag(name = "Author Admin Endpoints", description = "Author's endpoints for administrator access")
+@Tag(name = "Author Endpoints", description = "Author's endpoints ")
 public class AuthorAdminController {
     @Autowired
     private AuthorService authorService;

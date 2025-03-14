@@ -6,6 +6,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ import com.dominhdang.blog_app.features.post.repository.PostRepository;
 import com.dominhdang.blog_app.features.tag.entity.Tag;
 import com.dominhdang.blog_app.features.tag.repository.TagRepository;
 import com.dominhdang.blog_app.models.ApiResponse;
+import com.dominhdang.blog_app.models.Pagination;
 import com.dominhdang.blog_app.utils.SlugGenerator;
 
 @Service
@@ -81,7 +85,22 @@ public class PostServiceImpl implements PostService {
         return ApiResponse.<PostManageDetailDto>builder()
                 .status(HttpStatus.CREATED)
                 .data(this.postMapper.toManageDetailDto(this.postRepository.save(newPost)))
-                .message("Author saved successfully")
+                .message("Post created successfully")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> deletePost(UUID id) {
+        if (this.postRepository.existsById(id)) {
+            this.postRepository.deleteById(id);
+            return ApiResponse.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message(String.format("Post with id: %s deleted successfully", id))
+                    .build();
+        }
+        return ApiResponse.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found", id))
                 .build();
     }
 
@@ -103,13 +122,42 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApiResponse<List<PostManageItemDto>> getAdminPostList(String name, int currentPage, int pageSize) {
-        return null;
+    public ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostManageItemDto> result = this.postRepository.findAllByTitleContainingIgnoreCase(title, pageable)
+                .map(post -> this.postMapper.toManageItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostManageItemDto>>builder()
+                .status(HttpStatus.OK)
+                .message("Get all Posts successfully")
+                .pagination(pagination)
+                .data(result.toList())
+                .build();
     }
 
     @Override
-    public ApiResponse<List<PostClientItemDto>> getClientPostList(String name, int currentPage, int pageSize) {
-        return null;
+    public ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository
+                .findAllByTitleContainingIgnoreCaseAndPublishedTrue(title, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .message("Get all Posts successfully")
+                .pagination(pagination)
+                .data(result.toList())
+                .build();
     }
 
     @Override

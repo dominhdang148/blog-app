@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping(name = "Tags Endpoints", path = "api/tag")
-@Tag(name = "Tag Endpoints", description = "Tag's endpoints for public access")
+@RequestMapping(path = "api/tag")
+@Tag(name = "Tag Endpoints", description = "Tag's endpoints ")
 public class TagController {
 
     @Autowired

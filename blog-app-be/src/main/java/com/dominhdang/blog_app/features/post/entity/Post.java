@@ -34,7 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "post")
+@Table(name = "tbl_post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -74,11 +74,11 @@ public class Post {
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category")
     private Category category;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "author")
     private Author author;
 

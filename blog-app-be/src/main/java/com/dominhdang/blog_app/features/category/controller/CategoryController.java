@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/category")
-@Tag(name = "Category Endpoints", description = "Category's endpoints for public access")
+@Tag(name = "Category Endpoints", description = "Category's endpoints")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
