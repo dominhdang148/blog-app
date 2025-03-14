@@ -122,6 +122,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public ApiResponse<PostManageDetailDto> togglePublishPost(UUID id) {
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            post.setPublished(!post.getPublished());
+            return ApiResponse.<PostManageDetailDto>builder()
+                    .status(HttpStatus.OK)
+                    .data(this.postMapper.toManageDetailDto(this.postRepository.save(post)))
+                    .message(String.format("Post with id: %s updated successfully", id))
+                    .build();
+        }
+        return ApiResponse.<PostManageDetailDto>builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found ", id))
+                .build();
+    }
+
+    @Override
     public ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<PostManageItemDto> result = this.postRepository.findAllByTitleContainingIgnoreCase(title, pageable)

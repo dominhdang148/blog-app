@@ -17,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("api/admin/post")
@@ -32,7 +34,7 @@ public class PostAdminController {
     private PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostManageDetailDto>> postMethodName(@RequestBody PostFormDto post) {
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> createPost(@RequestBody PostFormDto post) {
         ApiResponse<PostManageDetailDto> response = this.postService.savePost(post);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -52,4 +54,14 @@ public class PostAdminController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    @PatchMapping("/{id}/toggle-published")
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> togglePublishPost(@PathVariable UUID id) {
+        ApiResponse<PostManageDetailDto> response = this.postService.togglePublishPost(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public String putMethodName(@PathVariable UUID id, @RequestBody PostFormDto post) {
+        return null;
+    }
 }

@@ -15,6 +15,8 @@ public interface PostService {
 
     ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id);
 
+    ApiResponse<PostManageDetailDto> togglePublishPost(UUID id);
+
     ApiResponse<PostManageDetailDto> getAdminPostDetail(UUID id);
 
     ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize);
@@ -22,4 +24,5 @@ public interface PostService {
     ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize);
 
     ApiResponse<?> deletePost(UUID id);
+
 }

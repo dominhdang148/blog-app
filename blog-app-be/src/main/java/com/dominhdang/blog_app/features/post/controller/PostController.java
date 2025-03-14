@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dominhdang.blog_app.features.post.dto.PostClientItemDto;
 import com.dominhdang.blog_app.features.post.service.PostService;
+import com.dominhdang.blog_app.models.ApiResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -23,10 +24,13 @@ public class PostController {
     PostService postService;
 
     @GetMapping("")
-    public ResponseEntity<List<PostClientItemDto>> getPostClientSide(
+    public ResponseEntity<ApiResponse<List<PostClientItemDto>>> getPostClientSide(
             @RequestParam(name = "title", defaultValue = "", required = false) String title,
             @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
             @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
-        return null;
+        ApiResponse<List<PostClientItemDto>> response = this.postService.getClientPostList(title, currentPage,
+                pageSize);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
+
 }
