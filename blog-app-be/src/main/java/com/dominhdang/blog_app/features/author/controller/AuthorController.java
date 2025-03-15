@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +40,8 @@ public class AuthorController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ApiResponse<AuthorDetailDto>> getAuthorById(
             @PathVariable("id") UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.authorService.getById(id));
+        ApiResponse<AuthorDetailDto> response = this.authorService.getById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
 }

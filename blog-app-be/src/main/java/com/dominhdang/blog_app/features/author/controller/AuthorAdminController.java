@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dominhdang.blog_app.features.author.dto.AuthorDetailDto;
 import com.dominhdang.blog_app.features.author.dto.AuthorFormDto;
 import com.dominhdang.blog_app.features.author.service.AuthorService;
-import com.dominhdang.blog_app.features.images.service.ImageService;
 import com.dominhdang.blog_app.models.ApiResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,13 +24,10 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/admin/author")
-@Tag(name = "Author Admin Endpoints", description = "Author's endpoints for administrator access")
+@Tag(name = "Author Endpoints", description = "Author's endpoints ")
 public class AuthorAdminController {
     @Autowired
     private AuthorService authorService;
-
-    @Autowired
-    private ImageService imageService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<AuthorDetailDto>> addAuthor(@Valid @RequestBody AuthorFormDto author) {
@@ -43,15 +39,8 @@ public class AuthorAdminController {
     public ResponseEntity<ApiResponse<AuthorDetailDto>> updateAuthorAvatar(
             @PathVariable UUID id,
             @RequestParam("avatar") MultipartFile avatar) {
-        ApiResponse<AuthorDetailDto> response;
-        try {
-            String imageUrl = imageService.saveImage(avatar);
-            response = authorService.updateAvatar(id, imageUrl);
-            return ResponseEntity.status(response.getStatus()).body(response);
-        } catch (Exception e) {
-            response = ApiResponse.<AuthorDetailDto>builder().message("An Error occur while saving image").build();
-            return ResponseEntity.badRequest().body(response);
-        }
+        ApiResponse<AuthorDetailDto> response = this.authorService.updateAvatar(id, avatar);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @PutMapping(value = "/{id}")

@@ -11,11 +11,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dominhdang.blog_app.features.author.entity.Author;
 import com.dominhdang.blog_app.features.author.repository.AuthorRepository;
 import com.dominhdang.blog_app.features.category.entity.Category;
 import com.dominhdang.blog_app.features.category.repository.CategoryRepository;
+import com.dominhdang.blog_app.features.images.service.ImageService;
 import com.dominhdang.blog_app.features.post.dto.PostClientDetailDto;
 import com.dominhdang.blog_app.features.post.dto.PostClientItemDto;
 import com.dominhdang.blog_app.features.post.dto.PostFormDto;
@@ -47,6 +49,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PostMapper postMapper;
+
+    @Autowired
+    ImageService imageService;
 
     @Override
     public ApiResponse<PostManageDetailDto> savePost(PostFormDto post) {
@@ -86,6 +91,54 @@ public class PostServiceImpl implements PostService {
                 .status(HttpStatus.CREATED)
                 .data(this.postMapper.toManageDetailDto(this.postRepository.save(newPost)))
                 .message("Post created successfully")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<PostManageDetailDto> savePost(UUID id, PostFormDto post) {
+        if (this.postRepository.existsById(id)) {
+            Author author = this.authorRepository.findById(post.getAuthorId()).orElse(null);
+            if (author == null) {
+                return ApiResponse.<PostManageDetailDto>builder().status(HttpStatus.NOT_FOUND)
+                        .message("Author not existed")
+                        .build();
+            }
+
+            Category category = this.categoryRepository.findById(post.getCategoryId())
+                    .orElse(null);
+
+            if (category == null) {
+                return ApiResponse.<PostManageDetailDto>builder().status(HttpStatus.NOT_FOUND)
+                        .message("Category not existed")
+                        .build();
+            }
+            Set<Tag> tagSet = new HashSet<>();
+            String[] tagNames = post.getTags().split(",");
+            if (post.getTags() != null && !post.getTags().isEmpty()) {
+                for (String tagName : tagNames) {
+                    final String trimedName = tagName.trim();
+                    Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
+                        Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
+                        return tagRepository.save(newtag);
+                    });
+                    tagSet.add(tag);
+                }
+            }
+
+            Post updatedPost = this.postMapper.toEntity(post);
+            updatedPost.setId(id);
+            updatedPost.setAuthor(author);
+            updatedPost.setCategory(category);
+            updatedPost.setTags(tagSet);
+            return ApiResponse.<PostManageDetailDto>builder()
+                    .status(HttpStatus.OK)
+                    .data(this.postMapper.toManageDetailDto(this.postRepository.save(updatedPost)))
+                    .message(String.format("Post with id: %s updated successfully", id))
+                    .build();
+        }
+        return ApiResponse.<PostManageDetailDto>builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found", id))
                 .build();
     }
 
@@ -178,7 +231,45 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public ApiResponse<PostManageDetailDto> updateImage(UUID id, MultipartFile image) {
+
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            try {
+                String imageUrl = this.imageService.saveImage(image);
+                post.setImageUrl(imageUrl);
+                return ApiResponse.<PostManageDetailDto>builder()
+                        .message(String.format("Post with id: %s updated successfully", id))
+                        .status(HttpStatus.OK)
+                        .data(this.postMapper.toManageDetailDto(this.postRepository.save(post)))
+                        .build();
+            } catch (Exception e) {
+                return ApiResponse.<PostManageDetailDto>builder()
+                        .message(String.format("There is error while saving image: %s", e.getMessage()))
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+        }
+
+        return ApiResponse.<PostManageDetailDto>builder()
+                .message(String.format("Post with id: %s not found", id))
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+    }
+
+    @Override
     public ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id) {
-        return null;
+        Post post = this.postRepository.findById(id).orElse(null);
+        if (post != null) {
+            return ApiResponse.<PostClientDetailDto>builder()
+                    .message(String.format("Post with id: %s updated successfully", id))
+                    .status(HttpStatus.OK)
+                    .data(this.postMapper.toClientDetailDto(post))
+                    .build();
+        }
+        return ApiResponse.<PostClientDetailDto>builder()
+                .message(String.format("Post with id: %s not found", id))
+                .status(HttpStatus.NOT_FOUND)
+                .build();
     }
 }

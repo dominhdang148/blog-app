@@ -40,6 +40,13 @@ public class PostAdminController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    @PostMapping(value = "{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> uploadImage(@PathVariable UUID id,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        ApiResponse<PostManageDetailDto> response = this.postService.updateImage(id, imageFile);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
     @GetMapping("")
     public ResponseEntity<ApiResponse<List<PostManageItemDto>>> getPostClientSide(
             @RequestParam(name = "title", defaultValue = "", required = false) String title,
@@ -59,11 +66,6 @@ public class PostAdminController {
     public ResponseEntity<ApiResponse<PostManageDetailDto>> togglePublishPost(@PathVariable UUID id) {
         ApiResponse<PostManageDetailDto> response = this.postService.togglePublishPost(id);
         return ResponseEntity.status(response.getStatus()).body(response);
-    }
-
-    @PostMapping(value = "{id}/image", consumes = "multipart/form-data")
-    public String uploadImage(@PathVariable UUID id, @RequestParam("imageFile[;w") MultipartFile imageFile) {
-        return null;
     }
 
 }
