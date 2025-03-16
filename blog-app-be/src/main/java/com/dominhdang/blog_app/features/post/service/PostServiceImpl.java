@@ -170,7 +170,7 @@ public class PostServiceImpl implements PostService {
         return ApiResponse.<PostManageDetailDto>builder()
                 .status(HttpStatus.OK)
                 .data(this.postMapper.toManageDetailDto(result))
-                .message(String.format("Post with id: %s not found", id))
+                .message(String.format("Post with id: %s founded successfully", id))
                 .build();
     }
 
@@ -250,7 +250,6 @@ public class PostServiceImpl implements PostService {
                         .build();
             }
         }
-
         return ApiResponse.<PostManageDetailDto>builder()
                 .message(String.format("Post with id: %s not found", id))
                 .status(HttpStatus.NOT_FOUND)
@@ -259,12 +258,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id) {
-        Post post = this.postRepository.findById(id).orElse(null);
-        if (post != null) {
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            if (post.getPublished()) {
+                return ApiResponse.<PostClientDetailDto>builder()
+                        .message(String.format("Post with id: %s updated successfully", id))
+                        .status(HttpStatus.OK)
+                        .data(this.postMapper.toClientDetailDto(post))
+                        .build();
+            }
             return ApiResponse.<PostClientDetailDto>builder()
-                    .message(String.format("Post with id: %s updated successfully", id))
-                    .status(HttpStatus.OK)
-                    .data(this.postMapper.toClientDetailDto(post))
+                    .message(String.format("Post with id: %s isn't published yet", id))
+                    .status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS)
                     .build();
         }
         return ApiResponse.<PostClientDetailDto>builder()

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("api/admin/post")
@@ -48,11 +49,24 @@ public class PostAdminController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<List<PostManageItemDto>>> getPostClientSide(
+    public ResponseEntity<ApiResponse<List<PostManageItemDto>>> getPostAdminSide(
             @RequestParam(name = "title", defaultValue = "", required = false) String title,
             @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
             @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
         ApiResponse<List<PostManageItemDto>> response = this.postService.getAdminPostList(title, currentPage, pageSize);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> getMethodName(@PathVariable UUID id) {
+        ApiResponse<PostManageDetailDto> response = this.postService.getAdminPostDetail(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> updatePost(@PathVariable UUID id,
+            @RequestBody PostFormDto post) {
+        ApiResponse<PostManageDetailDto> response = this.postService.savePost(id, post);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
@@ -64,8 +78,8 @@ public class PostAdminController {
 
     @PatchMapping("/{id}/toggle-published")
     public ResponseEntity<ApiResponse<PostManageDetailDto>> togglePublishPost(@PathVariable UUID id) {
+
         ApiResponse<PostManageDetailDto> response = this.postService.togglePublishPost(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
-
 }

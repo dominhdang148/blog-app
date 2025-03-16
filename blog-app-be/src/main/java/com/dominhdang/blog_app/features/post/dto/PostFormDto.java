@@ -33,9 +33,6 @@ public class PostFormDto {
     @NotBlank(message = "Post's Url Slug is required")
     private String urlSlug;
 
-    @Length(max = 1000, message = "Image URL shouldn't more than 1000 characters")
-    private String imageUrl;
-
     @NotNull(message = "Cateogory is required")
     private UUID categoryId;
 
