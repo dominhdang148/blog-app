@@ -125,15 +125,19 @@ public class PostServiceImpl implements PostService {
                 }
             }
 
-            Post updatedPost = this.postMapper.toEntity(post);
-            updatedPost.setId(id);
+            Post updatedPost = this.postRepository.findById(id).get();
+            updatedPost.setTitle(post.getTitle());
+            updatedPost.setShortDescription(post.getShortDescription());
+            updatedPost.setDescription(post.getDescription());
+            updatedPost.setMeta(post.getMeta());
+            updatedPost.setUrlSlug(post.getUrlSlug());
             updatedPost.setAuthor(author);
             updatedPost.setCategory(category);
             updatedPost.setTags(tagSet);
             return ApiResponse.<PostManageDetailDto>builder()
                     .status(HttpStatus.OK)
                     .data(this.postMapper.toManageDetailDto(this.postRepository.save(updatedPost)))
-                    .message(String.format("Post with id: %s updated successfully", id))
+                    .message(String.format("", id))
                     .build();
         }
         return ApiResponse.<PostManageDetailDto>builder()

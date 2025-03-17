@@ -29,6 +29,12 @@ public interface PostService {
 
     ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize);
 
+    ApiResponse<List<PostClientItemDto>> getPostByAuthor(UUID authorId, int currentPage, int pageSize);
+
+    ApiResponse<List<PostClientItemDto>> getPostByTag(UUID authorId, int currentPage, int pageSize);
+
+    ApiResponse<List<PostClientItemDto>> getPostByCategory(UUID authorId, int currentPage, int pageSize);
+
     ApiResponse<?> deletePost(UUID id);
 
 }
