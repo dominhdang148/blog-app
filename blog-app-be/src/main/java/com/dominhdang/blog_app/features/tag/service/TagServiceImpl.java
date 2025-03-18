@@ -117,13 +117,13 @@ public class TagServiceImpl implements TagService {
             this.tagRepository.deleteById(id);
             return ApiResponse.builder()
                     .status(HttpStatus.NO_CONTENT)
-                    .message(String.format("Tag with id: %s deleted successfully"))
+                    .message(String.format("Tag with id: %s deleted successfully", id))
                     .build();
         }
 
         return ApiResponse.builder()
                 .status(HttpStatus.NOT_FOUND)
-                .message(String.format("Tag with id: %s not found"))
+                .message(String.format("Tag with id: %s not found", id))
                 .build();
     }
 }

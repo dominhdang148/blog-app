@@ -3,6 +3,8 @@ package com.dominhdang.blog_app.features.author.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.dominhdang.blog_app.features.author.dto.AuthorDetailDto;
 import com.dominhdang.blog_app.features.author.dto.AuthorFormDto;
 import com.dominhdang.blog_app.features.author.dto.AuthorItemDto;
@@ -13,7 +15,7 @@ public interface AuthorService {
 
     ApiResponse<AuthorDetailDto> saveAuthor(UUID id, AuthorFormDto author);
 
-    ApiResponse<AuthorDetailDto> updateAvatar(UUID id, String imageUrl);
+    ApiResponse<AuthorDetailDto> updateAvatar(UUID id, MultipartFile image);
 
     ApiResponse<List<AuthorItemDto>> getAllByName(String name, int currentPage, int pageSize);
 

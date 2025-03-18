@@ -11,7 +11,6 @@ import com.dominhdang.blog_app.features.author.entity.Author;
 import com.dominhdang.blog_app.features.category.entity.Category;
 import com.dominhdang.blog_app.features.tag.entity.Tag;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +33,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "post")
+@Table(name = "tbl_post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -74,11 +73,11 @@ public class Post {
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category")
     private Category category;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "author")
     private Author author;
 

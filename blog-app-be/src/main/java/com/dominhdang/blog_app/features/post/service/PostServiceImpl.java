@@ -6,13 +6,18 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dominhdang.blog_app.features.author.entity.Author;
 import com.dominhdang.blog_app.features.author.repository.AuthorRepository;
 import com.dominhdang.blog_app.features.category.entity.Category;
 import com.dominhdang.blog_app.features.category.repository.CategoryRepository;
+import com.dominhdang.blog_app.features.images.service.ImageService;
 import com.dominhdang.blog_app.features.post.dto.PostClientDetailDto;
 import com.dominhdang.blog_app.features.post.dto.PostClientItemDto;
 import com.dominhdang.blog_app.features.post.dto.PostFormDto;
@@ -24,6 +29,7 @@ import com.dominhdang.blog_app.features.post.repository.PostRepository;
 import com.dominhdang.blog_app.features.tag.entity.Tag;
 import com.dominhdang.blog_app.features.tag.repository.TagRepository;
 import com.dominhdang.blog_app.models.ApiResponse;
+import com.dominhdang.blog_app.models.Pagination;
 import com.dominhdang.blog_app.utils.SlugGenerator;
 
 @Service
@@ -43,6 +49,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     PostMapper postMapper;
+
+    @Autowired
+    ImageService imageService;
 
     @Override
     public ApiResponse<PostManageDetailDto> savePost(PostFormDto post) {
@@ -65,11 +74,13 @@ public class PostServiceImpl implements PostService {
         if (post.getTags() != null && !post.getTags().isEmpty()) {
             for (String tagName : tagNames) {
                 final String trimedName = tagName.trim();
-                Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
-                    Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
-                    return tagRepository.save(newtag);
-                });
-                tagSet.add(tag);
+                if (!trimedName.isEmpty()) {
+                    Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
+                        Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
+                        return tagRepository.save(newtag);
+                    });
+                    tagSet.add(tag);
+                }
             }
         }
 
@@ -81,7 +92,74 @@ public class PostServiceImpl implements PostService {
         return ApiResponse.<PostManageDetailDto>builder()
                 .status(HttpStatus.CREATED)
                 .data(this.postMapper.toManageDetailDto(this.postRepository.save(newPost)))
-                .message("Author saved successfully")
+                .message("Post created successfully")
+                .build();
+    }
+
+    @Override
+    public ApiResponse<PostManageDetailDto> savePost(UUID id, PostFormDto post) {
+        if (this.postRepository.existsById(id)) {
+            Author author = this.authorRepository.findById(post.getAuthorId()).orElse(null);
+            if (author == null) {
+                return ApiResponse.<PostManageDetailDto>builder().status(HttpStatus.NOT_FOUND)
+                        .message("Author not existed")
+                        .build();
+            }
+
+            Category category = this.categoryRepository.findById(post.getCategoryId())
+                    .orElse(null);
+
+            if (category == null) {
+                return ApiResponse.<PostManageDetailDto>builder().status(HttpStatus.NOT_FOUND)
+                        .message("Category not existed")
+                        .build();
+            }
+            Set<Tag> tagSet = new HashSet<>();
+            String[] tagNames = post.getTags().split(",");
+            if (post.getTags() != null && !post.getTags().isEmpty()) {
+                for (String tagName : tagNames) {
+                    final String trimedName = tagName.trim();
+                    Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
+                        Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
+                        return tagRepository.save(newtag);
+                    });
+                    tagSet.add(tag);
+                }
+            }
+
+            Post updatedPost = this.postRepository.findById(id).get();
+            updatedPost.setTitle(post.getTitle());
+            updatedPost.setShortDescription(post.getShortDescription());
+            updatedPost.setDescription(post.getDescription());
+            updatedPost.setMeta(post.getMeta());
+            updatedPost.setUrlSlug(post.getUrlSlug());
+            updatedPost.setAuthor(author);
+            updatedPost.setCategory(category);
+            updatedPost.setTags(tagSet);
+            return ApiResponse.<PostManageDetailDto>builder()
+                    .status(HttpStatus.OK)
+                    .data(this.postMapper.toManageDetailDto(this.postRepository.save(updatedPost)))
+                    .message(String.format("", id))
+                    .build();
+        }
+        return ApiResponse.<PostManageDetailDto>builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found", id))
+                .build();
+    }
+
+    @Override
+    public ApiResponse<?> deletePost(UUID id) {
+        if (this.postRepository.existsById(id)) {
+            this.postRepository.deleteById(id);
+            return ApiResponse.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message(String.format("Post with id: %s deleted successfully", id))
+                    .build();
+        }
+        return ApiResponse.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found", id))
                 .build();
     }
 
@@ -98,22 +176,169 @@ public class PostServiceImpl implements PostService {
         return ApiResponse.<PostManageDetailDto>builder()
                 .status(HttpStatus.OK)
                 .data(this.postMapper.toManageDetailDto(result))
-                .message(String.format("Post with id: %s not found", id))
+                .message(String.format("Post with id: %s founded successfully", id))
                 .build();
     }
 
     @Override
-    public ApiResponse<List<PostManageItemDto>> getAdminPostList(String name, int currentPage, int pageSize) {
-        return null;
+    public ApiResponse<PostManageDetailDto> togglePublishPost(UUID id) {
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            post.setPublished(!post.getPublished());
+            return ApiResponse.<PostManageDetailDto>builder()
+                    .status(HttpStatus.OK)
+                    .data(this.postMapper.toManageDetailDto(this.postRepository.save(post)))
+                    .message(String.format("Post with id: %s updated successfully", id))
+                    .build();
+        }
+        return ApiResponse.<PostManageDetailDto>builder()
+                .status(HttpStatus.NOT_FOUND)
+                .message(String.format("Post with id: %s not found ", id))
+                .build();
     }
 
     @Override
-    public ApiResponse<List<PostClientItemDto>> getClientPostList(String name, int currentPage, int pageSize) {
-        return null;
+    public ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostManageItemDto> result = this.postRepository.findAllByTitleContainingIgnoreCase(title, pageable)
+                .map(post -> this.postMapper.toManageItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostManageItemDto>>builder()
+                .status(HttpStatus.OK)
+                .message("Get all Posts successfully")
+                .pagination(pagination)
+                .data(result.toList())
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository
+                .findAllByTitleContainingIgnoreCaseAndPublishedTrue(title, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .currentPage(currentPage)
+                .pageSize(pageSize)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .message("Get all Posts successfully")
+                .pagination(pagination)
+                .data(result.toList())
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByCategorySlug(String urlSlug, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByCategory_UrlSlug(urlSlug, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by category %s get successfully", urlSlug))
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByAuthorId(authorId,
+                pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder().status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by author %s get successfully", authorId))
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByTagSlug(String urlSlug, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByTags_UrlSlug(urlSlug, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by tag %s get successfully", urlSlug))
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<PostManageDetailDto> updateImage(UUID id, MultipartFile image) {
+
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            try {
+                String imageUrl = this.imageService.saveImage(image);
+                post.setImageUrl(imageUrl);
+                return ApiResponse.<PostManageDetailDto>builder()
+                        .message(String.format("Post with id: %s updated successfully", id))
+                        .status(HttpStatus.OK)
+                        .data(this.postMapper.toManageDetailDto(this.postRepository.save(post)))
+                        .build();
+            } catch (Exception e) {
+                return ApiResponse.<PostManageDetailDto>builder()
+                        .message(String.format("There is error while saving image: %s", e.getMessage()))
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+        }
+        return ApiResponse.<PostManageDetailDto>builder()
+                .message(String.format("Post with id: %s not found", id))
+                .status(HttpStatus.NOT_FOUND)
+                .build();
     }
 
     @Override
     public ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id) {
-        return null;
+        if (this.postRepository.existsById(id)) {
+            Post post = this.postRepository.findById(id).get();
+            if (post.getPublished()) {
+                return ApiResponse.<PostClientDetailDto>builder()
+                        .message(String.format("Post with id: %s updated successfully", id))
+                        .status(HttpStatus.OK)
+                        .data(this.postMapper.toClientDetailDto(post))
+                        .build();
+            }
+            return ApiResponse.<PostClientDetailDto>builder()
+                    .message(String.format("Post with id: %s isn't published yet", id))
+                    .status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS)
+                    .build();
+        }
+        return ApiResponse.<PostClientDetailDto>builder()
+                .message(String.format("Post with id: %s not found", id))
+                .status(HttpStatus.NOT_FOUND)
+                .build();
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dominhdang.blog_app.features.author.dto.AuthorDetailDto;
 import com.dominhdang.blog_app.features.author.dto.AuthorFormDto;
@@ -16,6 +17,7 @@ import com.dominhdang.blog_app.features.author.dto.AuthorItemDto;
 import com.dominhdang.blog_app.features.author.dto.mapper.AuthorMapper;
 import com.dominhdang.blog_app.features.author.entity.Author;
 import com.dominhdang.blog_app.features.author.repository.AuthorRepository;
+import com.dominhdang.blog_app.features.images.service.ImageService;
 import com.dominhdang.blog_app.models.ApiResponse;
 import com.dominhdang.blog_app.models.Pagination;
 
@@ -28,6 +30,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Autowired
     private AuthorMapper authorMapper;
+
+    @Autowired
+    private ImageService imageService;
 
     @Override
     public ApiResponse<AuthorDetailDto> saveAuthor(AuthorFormDto author) {
@@ -44,11 +49,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public ApiResponse<AuthorDetailDto> saveAuthor(UUID id, AuthorFormDto author) {
         if (authorRepository.existsById(id)) {
-            Author newAuthor = authorMapper.toEntity(author);
-            newAuthor.setId(id);
+            Author updatedAuthor = this.authorRepository.findById(id).get();
+            updatedAuthor.setFullName(author.getFullName());
+            updatedAuthor.setUrlSlug(author.getUrlSlug());
+            updatedAuthor.setEmail(author.getEmail());
+            updatedAuthor.setNote(author.getNote());
             return ApiResponse.<AuthorDetailDto>builder()
                     .status(HttpStatus.OK)
-                    .data(this.authorMapper.toDetailDto(this.authorRepository.save(newAuthor)))
+                    .data(this.authorMapper.toDetailDto(this.authorRepository.save(updatedAuthor)))
                     .message(String.format("Author with id: %s updated succesfully", id))
                     .build();
         }
@@ -60,16 +68,25 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public ApiResponse<AuthorDetailDto> updateAvatar(UUID id, String imageUrl) {
+    public ApiResponse<AuthorDetailDto> updateAvatar(UUID id, MultipartFile image) {
         Author author = authorRepository.findById(id).orElse(null);
 
         if (author != null) {
-            author.setImageUrl(imageUrl);
-            return ApiResponse.<AuthorDetailDto>builder()
-                    .data(this.authorMapper.toDetailDto(this.authorRepository.save(author)))
-                    .message(String.format("Author with id: %s updated succesfully", id))
-                    .status(HttpStatus.OK)
-                    .build();
+            try {
+                String imageUrl = imageService.saveImage(image);
+                author.setImageUrl(imageUrl);
+                return ApiResponse.<AuthorDetailDto>builder()
+                        .data(this.authorMapper.toDetailDto(this.authorRepository.save(author)))
+                        .message(String.format("Author with id: %s updated succesfully", id))
+                        .status(HttpStatus.OK)
+                        .build();
+
+            } catch (Exception e) {
+                return ApiResponse.<AuthorDetailDto>builder()
+                        .message(String.format("There is error while saving image: %s", e.getMessage()))
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
         }
 
         return ApiResponse.<AuthorDetailDto>builder()
