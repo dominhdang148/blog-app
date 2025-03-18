@@ -14,9 +14,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorFormDto {
+
     @NotBlank(message = "Fullname is required")
     @Length(max = 100, message = "Full name shouldn't more than 100 characters")
     private String fullName;
+
     @NotBlank(message = "Url slug is required")
     @Length(max = 100, message = "Url slug shouldn't more than 100 characters")
     private String urlSlug;

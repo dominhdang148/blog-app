@@ -74,11 +74,13 @@ public class PostServiceImpl implements PostService {
         if (post.getTags() != null && !post.getTags().isEmpty()) {
             for (String tagName : tagNames) {
                 final String trimedName = tagName.trim();
-                Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
-                    Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
-                    return tagRepository.save(newtag);
-                });
-                tagSet.add(tag);
+                if (!trimedName.isEmpty()) {
+                    Tag tag = this.tagRepository.findOneByName(trimedName).orElseGet(() -> {
+                        Tag newtag = Tag.builder().name(trimedName).urlSlug(SlugGenerator.toSlug(trimedName)).build();
+                        return tagRepository.save(newtag);
+                    });
+                    tagSet.add(tag);
+                }
             }
         }
 
@@ -231,6 +233,64 @@ public class PostServiceImpl implements PostService {
                 .message("Get all Posts successfully")
                 .pagination(pagination)
                 .data(result.toList())
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByCategorySlug(String urlSlug, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByCategory_UrlSlug(urlSlug, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by category %s get successfully", urlSlug))
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByAuthorId(authorId,
+                pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder().status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by author %s get successfully", authorId))
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByTagSlug(String urlSlug, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByTags_UrlSlug(urlSlug, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Posts by tag %s get successfully", urlSlug))
+                .pagination(pagination)
                 .build();
     }
 

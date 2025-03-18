@@ -12,4 +12,10 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     Page<Post> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     Page<Post> findAllByTitleContainingIgnoreCaseAndPublishedTrue(String title, Pageable pageable);
+
+    Page<Post> findByCategory_UrlSlug(String urlSlug, Pageable pageable);
+
+    Page<Post> findByAuthorId(UUID id, Pageable pageable);
+
+    Page<Post> findByTags_UrlSlug(String urlSlug, Pageable pageable);
 }

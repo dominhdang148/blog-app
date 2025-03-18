@@ -49,11 +49,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public ApiResponse<AuthorDetailDto> saveAuthor(UUID id, AuthorFormDto author) {
         if (authorRepository.existsById(id)) {
-            Author newAuthor = authorMapper.toEntity(author);
-            newAuthor.setId(id);
+            Author updatedAuthor = this.authorRepository.findById(id).get();
+            updatedAuthor.setFullName(author.getFullName());
+            updatedAuthor.setUrlSlug(author.getUrlSlug());
+            updatedAuthor.setEmail(author.getEmail());
+            updatedAuthor.setNote(author.getNote());
             return ApiResponse.<AuthorDetailDto>builder()
                     .status(HttpStatus.OK)
-                    .data(this.authorMapper.toDetailDto(this.authorRepository.save(newAuthor)))
+                    .data(this.authorMapper.toDetailDto(this.authorRepository.save(updatedAuthor)))
                     .message(String.format("Author with id: %s updated succesfully", id))
                     .build();
         }

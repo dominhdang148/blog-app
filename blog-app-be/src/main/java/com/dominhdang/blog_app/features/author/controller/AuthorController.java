@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dominhdang.blog_app.features.author.dto.AuthorDetailDto;
 import com.dominhdang.blog_app.features.author.dto.AuthorItemDto;
 import com.dominhdang.blog_app.features.author.service.AuthorService;
+import com.dominhdang.blog_app.features.post.dto.PostClientItemDto;
+import com.dominhdang.blog_app.features.post.service.PostService;
 import com.dominhdang.blog_app.models.ApiResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,9 @@ public class AuthorController {
     @Autowired
     private AuthorService authorService;
 
+    @Autowired
+    private PostService postService;
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<AuthorItemDto>>> getAuthorList(
             @RequestParam(name = "name", required = false, defaultValue = "") String name,
@@ -35,6 +40,15 @@ public class AuthorController {
         ApiResponse<List<AuthorItemDto>> response = this.authorService.getAllByName(name, currentPage, pageSize);
         return ResponseEntity.status(response.getStatus()).body(response);
 
+    }
+
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<ApiResponse<List<PostClientItemDto>>> getAuthorPost(
+            @PathVariable UUID id,
+            @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
+            @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
+        ApiResponse<List<PostClientItemDto>> response = this.postService.getPostByAuthorId(id, currentPage, pageSize);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @GetMapping(value = "/{id}")

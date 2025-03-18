@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dominhdang.blog_app.features.post.dto.PostClientItemDto;
+import com.dominhdang.blog_app.features.post.service.PostService;
 import com.dominhdang.blog_app.features.tag.dto.TagDetailDto;
 import com.dominhdang.blog_app.features.tag.dto.TagItemDto;
 import com.dominhdang.blog_app.features.tag.service.TagService;
@@ -27,6 +29,9 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private PostService postService;
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<TagItemDto>>> getAllTags(
             @RequestParam(name = "name", defaultValue = "", required = false) String name,
@@ -39,6 +44,15 @@ public class TagController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TagDetailDto>> getDetailTag(@PathVariable UUID id) {
         ApiResponse<TagDetailDto> response = this.tagService.getById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/{slug}/posts")
+    public ResponseEntity<ApiResponse<List<PostClientItemDto>>> getPostByTagSlug(
+            @PathVariable String slug,
+            @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
+            @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
+        ApiResponse<List<PostClientItemDto>> response = this.postService.getPostByTagSlug(slug, currentPage, pageSize);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

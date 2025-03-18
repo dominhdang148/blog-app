@@ -57,4 +57,5 @@ public class CategoryAdminController {
         ApiResponse<?> response = this.categoryService.deleteCategory(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
 }
