@@ -14,6 +14,11 @@ const routes: Routes = [
           import('./features/home/home.module').then((m) => m.HomeModule),
       },
       {
+        path: 'about',
+        loadChildren: () =>
+          import('./features/about/about.module').then((m) => m.AboutModule),
+      },
+      {
         path: 'not-found',
         loadChildren: () =>
           import('./features/not-found/not-found.module').then(
