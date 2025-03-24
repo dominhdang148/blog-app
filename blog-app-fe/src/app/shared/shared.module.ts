@@ -6,6 +6,7 @@ import { PostListComponent } from './post-list/post-list.component';
 import { PostItemComponent } from './post-list/components/post-item/post-item.component';
 import { TagListComponent } from './post-list/components/tag-list/tag-list.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { PostItemPlaceholderComponent } from './post-list/components/post-item-placeholder/post-item-placeholder.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { PaginationComponent } from './pagination/pagination.component';
     PostItemComponent,
     TagListComponent,
     PaginationComponent,
+    PostItemPlaceholderComponent,
   ],
   imports: [CommonModule],
   exports: [

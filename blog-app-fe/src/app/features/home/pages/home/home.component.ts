@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
 import { loadPosts } from 'src/app/store/post/post.actions';
@@ -23,26 +24,41 @@ export class HomeComponent implements OnInit {
   pagination$: Observable<Pagination | null>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
-  constructor(private store: Store) {
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
     this.posts$ = this.store.select(selectAllPosts);
     this.loading$ = this.store.select(selectLoading);
     this.pagination$ = this.store.select(selectPagination);
     this.error$ = this.store.select(selectError);
   }
   ngOnInit(): void {
-    this.loadPosts();
-  }
-  loadPosts() {
-    this.store.dispatch(
-      loadPosts({
-        title: '',
-        currentPage: this.currentPage,
-        pageSize: this.pageSize,
-      }),
-    );
+    this.route.queryParams
+      .pipe(map((params) => params['page'] || 1))
+      .subscribe((page) => {
+        this.router.navigate([], {
+          queryParams: { page: +page === 1 ? null : +page },
+          queryParamsHandling: 'merge',
+        });
+        this.store.dispatch(
+          loadPosts({
+            title: '',
+            currentPage: +page - 1,
+            pageSize: this.pageSize,
+          }),
+        );
+      });
+    this.pagination$ = this.store.select(selectPagination);
   }
   ngOnPageChange(newPage: number) {
-    this.currentPage = newPage;
-    this.loadPosts();
+    this.router.navigate([], {
+      queryParams: { page: newPage === 0 ? null : newPage + 1 },
+      queryParamsHandling: 'merge',
+    });
+    this.store.dispatch(
+      loadPosts({ title: '', currentPage: newPage, pageSize: this.pageSize }),
+    );
   }
 }

@@ -8,4 +8,5 @@ import { PostItem } from 'src/app/core/model/post/post-item';
 })
 export class PostListComponent {
   @Input() posts!: PostItem[] | null;
+  @Input() loading!: boolean | null;
 }
