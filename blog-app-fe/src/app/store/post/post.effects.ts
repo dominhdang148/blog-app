@@ -13,9 +13,11 @@ export class PostEffects {
   loadPosts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadPosts),
-      mergeMap(() =>
-        this.postService.getPosts().pipe(
-          map((posts) => loadPostSuccess({ posts })),
+      mergeMap(({ title, currentPage, pageSize }) =>
+        this.postService.getPosts(title, currentPage, pageSize).pipe(
+          map(({ posts, pagination }) =>
+            loadPostSuccess({ posts, pagination }),
+          ),
           catchError((error) => of(loadPostFailure({ error: error.message }))),
         ),
       ),
