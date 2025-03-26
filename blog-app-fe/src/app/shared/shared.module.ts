@@ -7,6 +7,7 @@ import { PostItemComponent } from './post-list/components/post-item/post-item.co
 import { TagListComponent } from './post-list/components/tag-list/tag-list.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { PostItemPlaceholderComponent } from './post-list/components/post-item-placeholder/post-item-placeholder.component';
+import { SearchFormComponent } from './sidebar/components/search-form/search-form.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { PostItemPlaceholderComponent } from './post-list/components/post-item-p
     TagListComponent,
     PaginationComponent,
     PostItemPlaceholderComponent,
+    SearchFormComponent,
   ],
   imports: [CommonModule],
   exports: [

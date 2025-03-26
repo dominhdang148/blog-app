@@ -1,7 +1,12 @@
 <nav class="my-5">
   <ul class="pagination justify-content-center">
     <li class="page-item">
-      <button (click)="onPageChange(0)" class="page-link">
+      <button
+        (click)="onPageChange(0)"
+        class="page-link"
+        [disabled]="pagination.currentPage === 0"
+        [ngClass]="pagination.currentPage === 0 ? 'disabled' : ''"
+      >
         <i class="bi bi-chevron-double-left"></i>
       </button>
     </li>
@@ -10,6 +15,7 @@
         class="page-link"
         (click)="onPageChange(pagination.currentPage - 1)"
         [disabled]="pagination.currentPage === 0"
+        [ngClass]="pagination.currentPage === 0 ? 'disabled' : ''"
       >
         <i class="bi bi-chevron-left"></i>
       </button>
@@ -24,6 +30,9 @@
         class="page-link"
         (click)="onPageChange(pagination.currentPage + 1)"
         [disabled]="pagination.currentPage === pagination.totalPages - 1"
+        [ngClass]="
+          pagination.currentPage === pagination.totalPages - 1 ? 'disabled' : ''
+        "
       >
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -31,6 +40,10 @@
     <li class="page-item">
       <button
         (click)="onPageChange(pagination.totalPages - 1)"
+        [disabled]="pagination.currentPage === pagination.totalPages - 1"
+        [ngClass]="
+          pagination.currentPage === pagination.totalPages - 1 ? 'disabled' : ''
+        "
         class="page-link"
       >
         <i class="bi bi-chevron-double-right"></i>

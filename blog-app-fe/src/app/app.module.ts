@@ -11,12 +11,14 @@ import { StoreModule } from '@ngrx/store';
 import { postReducer } from './store/post/post.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { PostEffects } from './store/post/post.effects';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [AppComponent, MainLayoutComponent, AdminLayoutComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    ReactiveFormsModule,
     HttpClientModule,
     StoreModule.forRoot({ posts: postReducer }),
     EffectsModule.forRoot([PostEffects]),
