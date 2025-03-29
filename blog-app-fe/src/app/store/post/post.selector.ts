@@ -4,9 +4,14 @@ import { state } from '@angular/animations';
 
 export const selectPostState = createFeatureSelector<PostState>('posts');
 
-export const { selectAll: selectAllPosts } =
-  postAdapter.getSelectors(selectPostState);
-
+export const selectAllPosts = createSelector(
+  selectPostState,
+  (state) => state.posts,
+);
+export const selectPagination = createSelector(
+  selectPostState,
+  (state) => state.pagination,
+);
 export const selectLoading = createSelector(
   selectPostState,
   (state) => state.loading,

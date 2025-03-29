@@ -1,0 +1,16 @@
+<div class="mb-4">
+  <form (ngSubmit)="onSearchSubmit()">
+    <div class="input-group mb-3">
+      <input
+        [(ngModel)]="keyword"
+        type="text"
+        name="keyword"
+        class="form-control"
+        placeholder="Enter keyword"
+      />
+      <button type="submit" class="btn btn-outline-secondary">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </form>
+</div>

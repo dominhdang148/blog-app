@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialState, postAdapter } from './post.state';
+import { initialState } from './post.state';
 import { loadPostFailure, loadPostSuccess, loadPosts } from './post.actions';
 
 export const postReducer = createReducer(
@@ -9,9 +9,12 @@ export const postReducer = createReducer(
     loading: true,
     error: null,
   })),
-  on(loadPostSuccess, (state, { posts }) =>
-    postAdapter.setAll(posts, { ...state, loading: false }),
-  ),
+  on(loadPostSuccess, (state, { posts, pagination }) => ({
+    ...state,
+    posts,
+    pagination,
+    loading: false,
+  })),
   on(loadPostFailure, (state, { error }) => ({
     ...state,
     loading: false,

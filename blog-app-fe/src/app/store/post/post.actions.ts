@@ -1,10 +1,14 @@
 import { createAction, props } from '@ngrx/store';
+import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
 
-export const loadPosts = createAction('[Post] Load Posts');
+export const loadPosts = createAction(
+  '[Post] Load Posts',
+  props<{ title: string; currentPage: number; pageSize: number }>(),
+);
 export const loadPostSuccess = createAction(
   '[Product] Load Product Success',
-  props<{ posts: PostItem[] }>(),
+  props<{ posts: PostItem[]; pagination: Pagination }>(),
 );
 export const loadPostFailure = createAction(
   '[Product] Load Product Failure',

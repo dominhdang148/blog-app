@@ -2,23 +2,30 @@
   <div class="card">
     <div class="row g-0">
       <div class="col-md-4">
-        <img src="https://placehold.co/600x400" class="card-img" alt="" />
+        <img
+          [attr.src]="
+            post.imageUrl
+              ? 'http://localhost:8080' + post.imageUrl
+              : 'https://placehold.co/600x400'
+          "
+          class="img-fluid h-100 rounded"
+          [alt]="post.urlSlug"
+        />
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Title</h5>
+          <h5 class="card-title">{{ post.title }}</h5>
           <p class="card-text">
             <small class="text-muted"> Author: </small>
-            <span class="text-primary">John Doe</span>
+            <span class="text-primary">{{ post.author.fullName }}</span>
             <small class="text-muted"> Category: </small>
-            <span class="text-primary">Technology</span>
+            <span class="text-primary">{{ post.category.name }}</span>
           </p>
           <p class="card-text">
-            Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint
-            cillum sint consectetur cupidatat.
+            {{ post.shortDescription }}
           </p>
           <div>
-            <app-tag-list></app-tag-list>
+            <app-tag-list [tags]="post.tags"></app-tag-list>
           </div>
           <div class="text-end">
             <a href="#" class="btn btn-primary"> Read more </a>
