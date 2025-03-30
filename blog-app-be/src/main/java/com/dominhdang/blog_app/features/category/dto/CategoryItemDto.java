@@ -18,4 +18,5 @@ public class CategoryItemDto {
     private String name;
     private String urlSlug;
     private Boolean showOnMenu;
+    private int postCount;
 }
