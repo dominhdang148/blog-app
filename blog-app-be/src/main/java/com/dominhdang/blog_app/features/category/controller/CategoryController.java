@@ -31,11 +31,8 @@ public class CategoryController {
     private PostService postService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryItemDto>>> getAllCategorySearch(
-            @RequestParam(name = "name", required = false, defaultValue = "") String name,
-            @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
-            @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
-        ApiResponse<List<CategoryItemDto>> response = this.categoryService.getAllByName(name, currentPage, pageSize);
+    public ResponseEntity<ApiResponse<List<CategoryItemDto>>> getAllShownOnMenu() {
+        ApiResponse<List<CategoryItemDto>> response = this.categoryService.getAllShownOnMenu();
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

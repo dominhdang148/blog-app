@@ -19,6 +19,8 @@ public interface CategoryService {
 
     ApiResponse<List<CategoryItemDto>> getAllByName(String name, int currentPage, int pageSize);
 
+    ApiResponse<List<CategoryItemDto>> getAllShownOnMenu();
+
     ApiResponse<?> deleteCategory(UUID id);
 
 }

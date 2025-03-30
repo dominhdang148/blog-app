@@ -17,6 +17,7 @@ public interface CategoryMapper {
 
     CategoryDetailDto toDetailDto(Category category);
 
+    @Mapping(target = "postCount", expression = "java(category.getPosts().size())")
     CategoryItemDto toItemDto(Category category);
 
 }

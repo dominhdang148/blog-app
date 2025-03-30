@@ -1,5 +1,6 @@
 package com.dominhdang.blog_app.features.category.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ import com.dominhdang.blog_app.features.category.entity.Category;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     Page<Category> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    List<Category> findByShowOnMenuTrue();
 
     boolean existsByNameIgnoreCaseOrUrlSlugIgnoreCase(String name, String urlSlug);
 

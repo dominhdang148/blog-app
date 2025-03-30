@@ -106,12 +106,26 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public ApiResponse<List<CategoryItemDto>> getAllShownOnMenu() {
+
+        List<CategoryItemDto> result = this.categoryRepository.findByShowOnMenuTrue().stream()
+                .map(category -> this.categoryMapper.toItemDto(category)).toList();
+
+        return ApiResponse.<List<CategoryItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result)
+                .message("Get Category List successfully")
+                .build();
+    }
+
+    @Override
     public ApiResponse<?> deleteCategory(UUID id) {
 
         Category category = this.categoryRepository.findById(id).orElse(null);
         if (category == null) {
             return ApiResponse.builder()
                     .message(String.format("Category with id: %s not found", id))
+
                     .status(HttpStatus.NOT_FOUND)
                     .build();
         }
@@ -129,14 +143,15 @@ public class CategoryServiceImpl implements CategoryService {
         if (category == null) {
             return ApiResponse.<CategoryDetailDto>builder()
                     .status(HttpStatus.NOT_FOUND)
-                    .message(String.format("Author with id: %s not found", id))
+                    .message(String.format("Categyry with id: %s not found", id))
                     .build();
         }
         category.setShowOnMenu(!category.getShowOnMenu());
         return ApiResponse.<CategoryDetailDto>builder()
                 .status(HttpStatus.OK)
-                .data(this.categoryMapper.toDetailDto(category))
-                .message(String.format("Author with id: %s updated successfully", id))
+                .data(this.categoryMapper.toDetailDto(this.categoryRepository.save(category)))
+                .message(String.format("Category with id: %s updated successfully", id))
                 .build();
     }
+
 }
