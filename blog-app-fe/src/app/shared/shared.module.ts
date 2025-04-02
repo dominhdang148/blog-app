@@ -9,6 +9,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { PostItemPlaceholderComponent } from './post-list/components/post-item-placeholder/post-item-placeholder.component';
 import { SearchFormComponent } from './sidebar/components/search-form/search-form.component';
 import { FormsModule } from '@angular/forms';
+import { CategoryWidgetComponent } from './sidebar/components/category-widget/category-widget.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     PaginationComponent,
     PostItemPlaceholderComponent,
     SearchFormComponent,
+    CategoryWidgetComponent,
   ],
   imports: [CommonModule, FormsModule],
   exports: [
