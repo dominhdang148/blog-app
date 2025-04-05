@@ -1,6 +1,6 @@
 <app-post-item-placeholder *ngIf="loading"></app-post-item-placeholder>
 
-<div *ngIf="posts === null || posts.length === 0" class="card">
+<div *ngIf="!loading && (posts === null || posts.length === 0)" class="card">
   <div class="card-body">
     <h3>No post available</h3>
   </div>

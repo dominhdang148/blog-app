@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { CategoryService } from './category.service';
-import { loadShownOnMenuCategories } from './category.actions';
+import {
+  loadCategoriesFailure,
+  loadCategoriesSuccess,
+  loadShownOnMenuCategories,
+} from './category.actions';
+import { catchError, map, mergeMap, of } from 'rxjs';
 
 @Injectable()
 export class CategoryEffects {
@@ -10,6 +15,16 @@ export class CategoryEffects {
     private categoryService: CategoryService,
   ) {}
   loadCategoryMenu$ = createEffect(() =>
-    this.actions$.pipe(ofType(loadShownOnMenuCategories)),
+    this.actions$.pipe(
+      ofType(loadShownOnMenuCategories),
+      mergeMap(() =>
+        this.categoryService
+          .getShowOnMenuCategories()
+          .pipe(map((categories) => loadCategoriesSuccess({ categories }))),
+      ),
+      catchError((error) =>
+        of(loadCategoriesFailure({ error: error.message })),
+      ),
+    ),
   );
 }

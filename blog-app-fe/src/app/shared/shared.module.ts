@@ -10,6 +10,7 @@ import { PostItemPlaceholderComponent } from './post-list/components/post-item-p
 import { SearchFormComponent } from './sidebar/components/search-form/search-form.component';
 import { FormsModule } from '@angular/forms';
 import { CategoryWidgetComponent } from './sidebar/components/category-widget/category-widget.component';
+import { CategoriesListComponent } from './sidebar/components/category-widget/components/categories-list/categories-list.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CategoryWidgetComponent } from './sidebar/components/category-widget/ca
     PostItemPlaceholderComponent,
     SearchFormComponent,
     CategoryWidgetComponent,
+    CategoriesListComponent,
   ],
   imports: [CommonModule, FormsModule],
   exports: [

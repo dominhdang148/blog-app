@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { PostState, postAdapter } from './post.state';
-import { state } from '@angular/animations';
+import { PostState } from './post.state';
 
 export const selectPostState = createFeatureSelector<PostState>('posts');
 
@@ -8,16 +7,16 @@ export const selectAllPosts = createSelector(
   selectPostState,
   (state) => state.posts,
 );
-export const selectPagination = createSelector(
+export const selectPostPagination = createSelector(
   selectPostState,
   (state) => state.pagination,
 );
-export const selectLoading = createSelector(
+export const selectPostLoading = createSelector(
   selectPostState,
   (state) => state.loading,
 );
 
-export const selectError = createSelector(
+export const selectPostError = createSelector(
   selectPostState,
   (state) => state.error,
 );

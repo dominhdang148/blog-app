@@ -1,6 +1,5 @@
 import { EntityState, createEntityAdapter } from '@ngrx/entity';
 import { CategoryItem } from 'src/app/core/model/category/category-item';
-import { postAdapter } from '../post/post.state';
 
 export interface CategoryState extends EntityState<CategoryItem> {
   categories: CategoryItem[];
