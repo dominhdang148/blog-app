@@ -7,9 +7,9 @@ import { PostItem } from 'src/app/core/model/post/post-item';
 import { loadPosts } from 'src/app/store/post/post.actions';
 import {
   selectAllPosts,
-  selectError,
-  selectLoading,
-  selectPagination,
+  selectPostError,
+  selectPostLoading,
+  selectPostPagination,
 } from 'src/app/store/post/post.selector';
 
 @Component({
@@ -31,9 +31,9 @@ export class HomeComponent implements OnInit {
     private router: Router,
   ) {
     this.posts$ = this.store.select(selectAllPosts);
-    this.loading$ = this.store.select(selectLoading);
-    this.pagination$ = this.store.select(selectPagination);
-    this.error$ = this.store.select(selectError);
+    this.loading$ = this.store.select(selectPostLoading);
+    this.pagination$ = this.store.select(selectPostPagination);
+    this.error$ = this.store.select(selectPostError);
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -54,8 +54,9 @@ export class HomeComponent implements OnInit {
         }),
       );
     });
-    this.pagination$ = this.store.select(selectPagination);
+    this.pagination$ = this.store.select(selectPostPagination);
   }
+
   ngOnPageChange(newPage: number) {
     this.router.navigate([], {
       queryParams: { page: newPage === 0 ? null : newPage + 1 },

@@ -1,0 +1,16 @@
+<ul class="list-group">
+  <li *ngFor="let category of categories" class="list-group-item">
+    <a href="#" class="text-decoration-none"
+      >{{ category.name }} ({{ category.postCount }})</a
+    >
+  </li>
+  <li
+    *ngIf="!loading && (categories === null || categories.length === 0)"
+    class="list-group-item"
+  >
+    <span class="text-primary">No Category available</span>
+  </li>
+  <li *ngIf="loading" class="list-group-item placeholder-glow">
+    <span class="placeholder col-10 bg-primary"></span>
+  </li>
+</ul>

@@ -3,4 +3,5 @@ export interface CategoryItem {
   name: string;
   urlSlug: string;
   showOnMenu: boolean;
+  postCount: number;
 }

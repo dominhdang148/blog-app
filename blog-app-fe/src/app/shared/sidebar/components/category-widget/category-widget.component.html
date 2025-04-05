@@ -1,0 +1,7 @@
+<div class="mb-4">
+  <h3 class="text-success">Categories</h3>
+  <app-categories-list
+    [categories]="categories$ | async"
+    [loading]="loading$ | async"
+  ></app-categories-list>
+</div>
