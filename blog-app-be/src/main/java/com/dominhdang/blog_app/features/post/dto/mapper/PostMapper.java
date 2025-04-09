@@ -26,6 +26,7 @@ public interface PostMapper {
     @Mapping(target = "modifiedDate", ignore = true)
     @Mapping(target = "postedDate", ignore = true)
     @Mapping(target = "viewCount", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
     Post toEntity(PostFormDto post);
 
     @Mapping(source = "author", target = "author")
