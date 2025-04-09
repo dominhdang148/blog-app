@@ -58,7 +58,7 @@ public class PostAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostManageDetailDto>> getMethodName(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<PostManageDetailDto>> getAdminDetailPost(@PathVariable UUID id) {
         ApiResponse<PostManageDetailDto> response = this.postService.getAdminPostDetail(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
