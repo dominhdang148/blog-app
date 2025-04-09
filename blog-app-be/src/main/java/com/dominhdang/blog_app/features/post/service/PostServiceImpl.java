@@ -220,7 +220,7 @@ public class PostServiceImpl implements PostService {
     public ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<PostClientItemDto> result = this.postRepository
-                .findAllByTitleContainingIgnoreCaseAndPublishedTrue(title, pageable)
+                .findAllByTitleContainingIgnoreCaseAndPublished(title, true, pageable)
                 .map(post -> this.postMapper.toClientItemDto(post));
         Pagination pagination = Pagination.builder()
                 .currentPage(currentPage)
@@ -239,7 +239,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ApiResponse<List<PostClientItemDto>> getPostByCategorySlug(String urlSlug, int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
-        Page<PostClientItemDto> result = this.postRepository.findByCategory_UrlSlug(urlSlug, pageable)
+        Page<PostClientItemDto> result = this.postRepository.findByCategory_UrlSlugAndPublished(urlSlug, true, pageable)
                 .map(post -> this.postMapper.toClientItemDto(post));
 
         Pagination pagination = Pagination.builder()
@@ -257,18 +257,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApiResponse<List<PostClientItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize) {
+    public ApiResponse<List<PostManageItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
-        Page<PostClientItemDto> result = this.postRepository.findByAuthorId(authorId,
+        Page<PostManageItemDto> result = this.postRepository.findByAuthorId(authorId,
                 pageable)
-                .map(post -> this.postMapper.toClientItemDto(post));
+                .map(post -> this.postMapper.toManageItemDto(post));
         Pagination pagination = Pagination.builder()
                 .pageSize(pageSize)
                 .currentPage(currentPage)
                 .totalItems(result.getTotalElements())
                 .totalPages(result.getTotalPages())
                 .build();
-        return ApiResponse.<List<PostClientItemDto>>builder().status(HttpStatus.OK)
+        return ApiResponse.<List<PostManageItemDto>>builder().status(HttpStatus.OK)
                 .data(result.toList())
                 .message(String.format("Posts by author %s get successfully", authorId))
                 .pagination(pagination)
@@ -278,7 +278,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ApiResponse<List<PostClientItemDto>> getPostByTagSlug(String urlSlug, int currentPage, int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
-        Page<PostClientItemDto> result = this.postRepository.findByTags_UrlSlug(urlSlug, pageable)
+        Page<PostClientItemDto> result = this.postRepository.findByTags_UrlSlugAndPublished(urlSlug, true, pageable)
                 .map(post -> this.postMapper.toClientItemDto(post));
         Pagination pagination = Pagination.builder()
                 .pageSize(pageSize)
@@ -292,6 +292,27 @@ public class PostServiceImpl implements PostService {
                 .message(String.format("Posts by tag %s get successfully", urlSlug))
                 .pagination(pagination)
                 .build();
+    }
+
+    @Override
+    public ApiResponse<List<PostClientItemDto>> getPostByAuthorSlug(String urlSlug, int currentPage, int pageSize) {
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<PostClientItemDto> result = this.postRepository.findByAuthor_UrlSlugAndPublished(urlSlug, true, pageable)
+                .map(post -> this.postMapper.toClientItemDto(post));
+        Pagination pagination = Pagination.builder()
+                .pageSize(pageSize)
+                .currentPage(currentPage)
+                .totalItems(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build();
+
+        return ApiResponse.<List<PostClientItemDto>>builder()
+                .status(HttpStatus.OK)
+                .data(result.toList())
+                .message(String.format("Post by author %s get succesfully", urlSlug))
+                .pagination(pagination)
+                .build();
+
     }
 
     @Override

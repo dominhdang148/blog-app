@@ -29,7 +29,9 @@ public interface PostService {
 
     ApiResponse<List<PostManageItemDto>> getAdminPostList(String title, int currentPage, int pageSize);
 
-    ApiResponse<List<PostClientItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize);
+    ApiResponse<List<PostManageItemDto>> getPostByAuthorId(UUID authorId, int currentPage, int pageSize);
+
+    ApiResponse<List<PostClientItemDto>> getPostByAuthorSlug(String urlSlug, int currentPage, int pageSize);
 
     ApiResponse<List<PostClientItemDto>> getPostByCategorySlug(String urlSlug, int currentPage, int pageSize);
 

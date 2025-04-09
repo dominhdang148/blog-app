@@ -42,12 +42,13 @@ public class AuthorController {
 
     }
 
-    @GetMapping("/{id}/posts")
+    @GetMapping("/{slug}/posts")
     public ResponseEntity<ApiResponse<List<PostClientItemDto>>> getAuthorPost(
-            @PathVariable UUID id,
+            @PathVariable String slug,
             @RequestParam(name = "currentPage", defaultValue = "0") int currentPage,
             @RequestParam(name = "pageSize", defaultValue = "3") int pageSize) {
-        ApiResponse<List<PostClientItemDto>> response = this.postService.getPostByAuthorId(id, currentPage, pageSize);
+        ApiResponse<List<PostClientItemDto>> response = this.postService.getPostByAuthorSlug(slug, currentPage,
+                pageSize);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
