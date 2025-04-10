@@ -6,10 +6,10 @@ import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
 import { loadPosts } from 'src/app/store/post/post.actions';
 import {
-  selectAllPosts,
   selectPostError,
   selectPostLoading,
   selectPostPagination,
+  selectPostsList,
 } from 'src/app/store/post/post.selector';
 
 @Component({
@@ -19,7 +19,7 @@ import {
 })
 export class HomeComponent implements OnInit {
   keyword = '';
-  currentPage = 0;
+  currentPage = 1;
   pageSize = 3;
   posts$: Observable<PostItem[]>;
   pagination$: Observable<Pagination | null>;
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    this.posts$ = this.store.select(selectAllPosts);
+    this.posts$ = this.store.select(selectPostsList);
     this.loading$ = this.store.select(selectPostLoading);
     this.pagination$ = this.store.select(selectPostPagination);
     this.error$ = this.store.select(selectPostError);

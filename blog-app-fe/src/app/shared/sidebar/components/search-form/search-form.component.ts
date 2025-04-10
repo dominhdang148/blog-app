@@ -25,7 +25,7 @@ export class SearchFormComponent implements OnInit {
       });
   }
   onSearchSubmit() {
-    this.router.navigate([], {
+    this.router.navigate([''], {
       queryParams: { keyword: this.keyword, page: null },
       queryParamsHandling: 'merge',
     });

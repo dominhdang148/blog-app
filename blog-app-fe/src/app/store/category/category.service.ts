@@ -26,7 +26,9 @@ export class CategoryService {
     pagination: Pagination;
   }> {
     return this.httpClient
-      .get<ApiResponse<PostItem[]>>(`${this.apiUrl}/${slug}/posts`)
+      .get<
+        ApiResponse<PostItem[]>
+      >(`${this.apiUrl}/${slug}/posts?currentPage=${currentPage}&pageSize=${pageSize}`)
       .pipe(
         map((response) => ({
           posts: response.data,

@@ -3,7 +3,7 @@ import { PostState } from './post.state';
 
 export const selectPostState = createFeatureSelector<PostState>('posts');
 
-export const selectAllPosts = createSelector(
+export const selectPostsList = createSelector(
   selectPostState,
   (state) => state.posts,
 );

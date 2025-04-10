@@ -6,11 +6,17 @@ export const loadPosts = createAction(
   '[Post] Load Posts',
   props<{ title: string; currentPage: number; pageSize: number }>(),
 );
+
+export const loadPostsCategory = createAction(
+  '[Post] Load Posts By Category',
+  props<{ slug: string; currentPage: number; pageSize: number }>(),
+);
+
 export const loadPostSuccess = createAction(
-  '[Product] Load Product Success',
+  '[Post] Load Post Success',
   props<{ posts: PostItem[]; pagination: Pagination }>(),
 );
 export const loadPostFailure = createAction(
-  '[Product] Load Product Failure',
+  '[Post] Load Post Failure',
   props<{ error: string }>(),
 );
