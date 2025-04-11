@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, merge } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { loadPostsCategory } from 'src/app/store/post/post.actions';
+import { loadPosts, loadPostsCategory } from 'src/app/store/post/post.actions';
 import {
   selectPostError,
   selectPostLoading,
@@ -38,15 +38,14 @@ export class PostByCategoryComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug')!;
+      this.store.dispatch(
+        loadPostsCategory({
+          slug: this.slug,
+          currentPage: this.currentPage - 1,
+          pageSize: this.pageSize,
+        }),
+      );
     });
-
-    this.store.dispatch(
-      loadPostsCategory({
-        slug: this.slug,
-        currentPage: this.currentPage - 1,
-        pageSize: this.pageSize,
-      }),
-    );
 
     this.pagination$ = this.store.select(selectPostPagination);
   }

@@ -11,6 +11,7 @@ import { SearchFormComponent } from './sidebar/components/search-form/search-for
 import { FormsModule } from '@angular/forms';
 import { CategoryWidgetComponent } from './sidebar/components/category-widget/category-widget.component';
 import { CategoriesListComponent } from './sidebar/components/category-widget/components/categories-list/categories-list.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { CategoriesListComponent } from './sidebar/components/category-widget/co
     CategoryWidgetComponent,
     CategoriesListComponent,
   ],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   exports: [
     HeaderComponent,
     SidebarComponent,

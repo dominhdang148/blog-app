@@ -1,8 +1,24 @@
 <ul class="list-group">
   <li *ngFor="let category of categories" class="list-group-item">
-    <a href="#" class="text-decoration-none"
-      >{{ category.name }} ({{ category.postCount }})</a
+    <!-- <a -->
+    <!--   href="{{ '/blog/category/' + category.urlSlug }}" -->
+    <!--   class="text-decoration-none" -->
+    <!-- > -->
+    <!--   {{ category.name }} ({{ category.postCount }}) -->
+    <!-- </a> -->
+
+    <!-- <a -->
+    <!--   class="text-decoration-none cursor-pointer" -->
+    <!--   (click)="ngOnCategoryClick(category)" -->
+    <!-- > -->
+    <!--   {{ category.name }} ({{ category.postCount }}) -->
+    <!-- </a> -->
+    <a
+      [routerLink]="['/blog/category', category.urlSlug]"
+      class="text-decoration-none cursor-pointer"
     >
+      {{ category.name }} ({{ category.postCount }})
+    </a>
   </li>
   <li
     *ngIf="!loading && (categories === null || categories.length === 0)"

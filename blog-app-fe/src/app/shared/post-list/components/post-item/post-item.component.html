@@ -19,7 +19,12 @@
             <small class="text-muted"> Author: </small>
             <span class="text-primary">{{ post.author.fullName }}</span>
             <small class="text-muted"> Category: </small>
-            <span class="text-primary">{{ post.category.name }}</span>
+            <a
+              [routerLink]="['blog/category', post.category.urlSlug]"
+              class="text-decoration-none"
+            >
+              <span>{{ post.category.name }}</span>
+            </a>
           </p>
           <p class="card-text">
             {{ post.shortDescription }}
