@@ -12,6 +12,16 @@ export const loadPostsCategory = createAction(
   props<{ slug: string; currentPage: number; pageSize: number }>(),
 );
 
+export const loadPostsAuthor = createAction(
+  '[Post] Load Posts By Author',
+  props<{ slug: string; currentPage: number; pageSize: number }>(),
+);
+
+export const loadPostsTag = createAction(
+  '[Post] Load Posts By Tag',
+  props<{ slug: string; currentPage: number; pageSize: number }>(),
+);
+
 export const loadPostSuccess = createAction(
   '[Post] Load Post Success',
   props<{ posts: PostItem[]; pagination: Pagination }>(),

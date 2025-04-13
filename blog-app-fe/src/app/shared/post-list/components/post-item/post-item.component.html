@@ -17,13 +17,18 @@
           <h5 class="card-title">{{ post.title }}</h5>
           <p class="card-text">
             <small class="text-muted"> Author: </small>
-            <span class="text-primary">{{ post.author.fullName }}</span>
-            <small class="text-muted"> Category: </small>
             <a
-              [routerLink]="['blog/category', post.category.urlSlug]"
+              [routerLink]="['/blog/author', post.author.urlSlug]"
               class="text-decoration-none"
             >
-              <span>{{ post.category.name }}</span>
+              <span class="text-primary">{{ post.author.fullName }}</span>
+            </a>
+            <small class="text-muted"> Category: </small>
+            <a
+              [routerLink]="['/blog/category', post.category.urlSlug]"
+              class="text-decoration-none"
+            >
+              <span class="text-primary">{{ post.category.name }}</span>
             </a>
           </p>
           <p class="card-text">

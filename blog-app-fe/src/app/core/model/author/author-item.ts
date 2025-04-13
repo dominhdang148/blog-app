@@ -3,6 +3,5 @@ export interface AuthorItem {
   fullName: string;
   imageUrl: string;
   joinedDate: Date;
-  email: string;
-  note: string;
+  urlSlug: string;
 }

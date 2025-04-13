@@ -1,15 +1,12 @@
 <div class="p-4">
   <app-post-list
+    [posts]="post$ | async"
     [loading]="loading$ | async"
-    [posts]="posts$ | async"
   ></app-post-list>
-
-  <app-post-by-tag></app-post-by-tag>
-
   <app-pagination
     *ngIf="pagination$ | async as pagination"
-    (pageChange)="ngOnPageChange($event)"
     [pagination]="pagination"
+    (pageChange)="ngOnPageChange($event)"
     [hidden]="pagination.totalPages <= 1"
   ></app-pagination>
 </div>

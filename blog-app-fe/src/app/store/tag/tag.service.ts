@@ -4,21 +4,19 @@ import { Observable, map } from 'rxjs';
 import { ApiResponse } from 'src/app/core/model/api-response';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
+import { PostItemPlaceholderComponent } from 'src/app/shared/post-list/components/post-item-placeholder/post-item-placeholder.component';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorService {
-  private apiUrl = 'http://localhost:8080/api/author';
+export class TagService {
+  private apiUrl: string = 'http://localhost:8080/api/tag';
   constructor(private httpClient: HttpClient) {}
-  getPostsByAuthorSlug(
+  getPostByTagSlug(
     slug: string,
-    currentPage: number = 0,
+    currentPage: number = 1,
     pageSize: number = 3,
-  ): Observable<{
-    posts: PostItem[];
-    pagination: Pagination;
-  }> {
+  ): Observable<{ posts: PostItem[]; pagination: Pagination }> {
     return this.httpClient
       .get<
         ApiResponse<PostItem[]>
