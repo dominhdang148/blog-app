@@ -37,6 +37,7 @@ export class PostByTagComponent implements OnInit {
     this.pagination$ = this.store.select(selectPostPagination);
   }
   ngOnInit(): void {
+    console.log('Tag page is being called');
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug')!;
       this.store.dispatch(
@@ -51,6 +52,17 @@ export class PostByTagComponent implements OnInit {
   }
 
   ngOnPageChange(newPage: number) {
-    this.router.navigate([], {});
+    this.router.navigate([], {
+      queryParams: { page: newPage == 0 ? null : newPage + 1 },
+      queryParamsHandling: 'merge',
+    });
+
+    this.store.dispatch(
+      loadPostsTag({
+        slug: this.slug,
+        currentPage: newPage,
+        pageSize: this.pageSize,
+      }),
+    );
   }
 }

@@ -10,8 +10,8 @@ export class HeaderComponent {
   menuItems: MenuItem[] = [
     {
       id: 1,
-      title: 'Posts',
-      path: '/post',
+      title: 'Home',
+      path: '/home',
     },
     {
       id: 2,

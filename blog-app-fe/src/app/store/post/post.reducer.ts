@@ -6,11 +6,12 @@ import {
   loadPosts,
   loadPostsAuthor,
   loadPostsCategory,
+  loadPostsTag,
 } from './post.actions';
 
 export const postReducer = createReducer(
   initialState,
-  on(loadPosts, loadPostsCategory, loadPostsAuthor, (state) => ({
+  on(loadPosts, loadPostsTag, loadPostsCategory, loadPostsAuthor, (state) => ({
     ...state,
     loading: true,
     error: null,

@@ -7,10 +7,12 @@ import {
   loadPosts,
   loadPostsAuthor,
   loadPostsCategory,
+  loadPostsTag,
 } from './post.actions';
 import { catchError, map, mergeMap, of } from 'rxjs';
 import { CategoryService } from '../category/category.service';
 import { AuthorService } from '../author/author.service';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class PostEffects {
@@ -19,6 +21,7 @@ export class PostEffects {
     private postService: PostService,
     private categoryService: CategoryService,
     private authorService: AuthorService,
+    private tagService: TagService,
   ) {}
 
   loadPosts$ = createEffect(() =>
@@ -50,6 +53,20 @@ export class PostEffects {
               of(loadPostFailure({ error: error.message })),
             ),
           ),
+      ),
+    ),
+  );
+
+  loadPostsTag$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadPostsTag),
+      mergeMap(({ slug, currentPage, pageSize }) =>
+        this.tagService.getPostByTagSlug(slug, currentPage, pageSize).pipe(
+          map(({ posts, pagination }) =>
+            loadPostSuccess({ posts, pagination }),
+          ),
+          catchError((error) => of(loadPostFailure({ error: error.message }))),
+        ),
       ),
     ),
   );

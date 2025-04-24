@@ -4,8 +4,6 @@
     [posts]="posts$ | async"
   ></app-post-list>
 
-  <app-post-by-tag></app-post-by-tag>
-
   <app-pagination
     *ngIf="pagination$ | async as pagination"
     (pageChange)="ngOnPageChange($event)"
