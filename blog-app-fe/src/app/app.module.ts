@@ -1,4 +1,4 @@
-import { NgModule, effect } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -7,7 +7,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { SharedModule } from './shared/shared.module';
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { HttpClientModule } from '@angular/common/http';
-import { Store, StoreModule } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { postReducer } from './store/post/post.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { PostEffects } from './store/post/post.effects';

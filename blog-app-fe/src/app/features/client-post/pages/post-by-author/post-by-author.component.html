@@ -1,0 +1,12 @@
+<div class="p-4">
+  <app-post-list
+    [posts]="post$ | async"
+    [loading]="loading$ | async"
+  ></app-post-list>
+  <app-pagination
+    *ngIf="pagination$ | async as pagination"
+    [pagination]="pagination"
+    (pageChange)="ngOnPageChange($event)"
+    [hidden]="pagination.totalPages <= 1"
+  ></app-pagination>
+</div>

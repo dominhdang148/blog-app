@@ -2,29 +2,21 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from 'src/app/core/model/api-response';
-import { CategoryItem } from 'src/app/core/model/category/category-item';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
+import { PostItemPlaceholderComponent } from 'src/app/shared/post-list/components/post-item-placeholder/post-item-placeholder.component';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CategoryService {
-  private apiUrl = 'http://localhost:8080/api/category';
+export class TagService {
+  private apiUrl: string = 'http://localhost:8080/api/tag';
   constructor(private httpClient: HttpClient) {}
-  getShowOnMenuCategories(): Observable<CategoryItem[]> {
-    return this.httpClient
-      .get<ApiResponse<CategoryItem[]>>(this.apiUrl)
-      .pipe(map((response) => response.data));
-  }
-  getPostsByCategory(
+  getPostByTagSlug(
     slug: string,
-    currentPage: number = 0,
+    currentPage: number = 1,
     pageSize: number = 3,
-  ): Observable<{
-    posts: PostItem[];
-    pagination: Pagination;
-  }> {
+  ): Observable<{ posts: PostItem[]; pagination: Pagination }> {
     return this.httpClient
       .get<
         ApiResponse<PostItem[]>

@@ -4,51 +4,45 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { loadPosts } from 'src/app/store/post/post.actions';
+import { loadPostsTag } from 'src/app/store/post/post.actions';
 import {
-  selectAllPosts,
   selectPostError,
   selectPostLoading,
   selectPostPagination,
+  selectPostsList,
 } from 'src/app/store/post/post.selector';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  selector: 'app-post-by-tag',
+  templateUrl: './post-by-tag.component.html',
+  styleUrls: ['./post-by-tag.component.css'],
 })
-export class HomeComponent implements OnInit {
-  keyword = '';
-  currentPage = 0;
+export class PostByTagComponent implements OnInit {
+  slug!: string;
+  currentPage: number = 1;
   pageSize = 3;
-  posts$: Observable<PostItem[]>;
+  post$: Observable<PostItem[]>;
   pagination$: Observable<Pagination | null>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
+
   constructor(
     private store: Store,
-    private route: ActivatedRoute,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
-    this.posts$ = this.store.select(selectAllPosts);
+    this.post$ = this.store.select(selectPostsList);
     this.loading$ = this.store.select(selectPostLoading);
-    this.pagination$ = this.store.select(selectPostPagination);
     this.error$ = this.store.select(selectPostError);
+    this.pagination$ = this.store.select(selectPostPagination);
   }
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.keyword = params['keyword'] || '';
-      this.currentPage = params['page'] ? +params['page'] : 1;
-      this.router.navigate([], {
-        queryParams: {
-          page: this.currentPage === 1 ? null : this.currentPage,
-          keyword: this.keyword === '' ? null : this.keyword,
-        },
-        queryParamsHandling: 'merge',
-      });
+    console.log('Tag page is being called');
+    this.route.paramMap.subscribe((params) => {
+      this.slug = params.get('slug')!;
       this.store.dispatch(
-        loadPosts({
-          title: this.keyword,
+        loadPostsTag({
+          slug: this.slug,
           currentPage: this.currentPage - 1,
           pageSize: this.pageSize,
         }),
@@ -59,12 +53,13 @@ export class HomeComponent implements OnInit {
 
   ngOnPageChange(newPage: number) {
     this.router.navigate([], {
-      queryParams: { page: newPage === 0 ? null : newPage + 1 },
+      queryParams: { page: newPage == 0 ? null : newPage + 1 },
       queryParamsHandling: 'merge',
     });
+
     this.store.dispatch(
-      loadPosts({
-        title: this.keyword,
+      loadPostsTag({
+        slug: this.slug,
         currentPage: newPage,
         pageSize: this.pageSize,
       }),

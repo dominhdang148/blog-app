@@ -11,18 +11,13 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/home/home.module').then((m) => m.HomeModule),
+          import('./features/public/public.module').then((m) => m.PublicModule),
       },
       {
-        path: 'about',
+        path: 'blog',
         loadChildren: () =>
-          import('./features/about/about.module').then((m) => m.AboutModule),
-      },
-      {
-        path: 'contact',
-        loadChildren: () =>
-          import('./features/contact/contact.module').then(
-            (m) => m.ContactModule,
+          import('./features/client-post/client-post.module').then(
+            (m) => m.ClientPostModule,
           ),
       },
       {
