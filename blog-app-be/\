@@ -31,8 +31,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     Page<Post> findByTagsId(UUID id, Pageable pageable);
 
-    @Query("SELECT p FROM Post p WHERE p.urlSlug = :urlSlug AND p.postedDate BETWEEN :startTime AND :endTime")
-    Optional<Post> findByUrlSlugBetween(@Param("startTime") LocalDateTime startTime,
+    @Query("SELECT p FROM  Post p WHERE p.urlSlug = ")
+    Optional<Post> findByUrlSlugBetween(@Param("startDate") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime,
             @Param("urlSlug") String urlSlug);
 

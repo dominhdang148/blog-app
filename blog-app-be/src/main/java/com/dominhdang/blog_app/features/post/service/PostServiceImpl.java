@@ -1,5 +1,9 @@
 package com.dominhdang.blog_app.features.post.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -342,24 +346,44 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id) {
-        if (this.postRepository.existsById(id)) {
-            Post post = this.postRepository.findById(id).get();
-            if (post.getPublished()) {
+    public ApiResponse<PostClientDetailDto> getClientPostDetail(int year, int month, int day, String urlSlug) {
+
+        LocalDate postDate = LocalDate.of(year, month, day);
+        LocalDateTime startOfDate = postDate.atStartOfDay();
+        LocalDateTime endOfDate = postDate.atTime(LocalTime.MAX);
+
+        try {
+            Post post = this.postRepository.findByUrlSlugBetween(startOfDate, endOfDate, urlSlug).orElse(null);
+            if (post != null) {
+                if (post.getPublished()) {
+                    return ApiResponse.<PostClientDetailDto>builder()
+                            .message(
+                                    String.format("Post with slug %s posted at %d - %d - %d found", urlSlug, day, month,
+                                            year))
+                            .data(this.postMapper.toClientDetailDto(post))
+                            .status(HttpStatus.OK)
+                            .build();
+
+                }
                 return ApiResponse.<PostClientDetailDto>builder()
-                        .message(String.format("Post with id: %s updated successfully", id))
-                        .status(HttpStatus.OK)
-                        .data(this.postMapper.toClientDetailDto(post))
+                        .message(
+                                String.format("Post with slug %s posted at %d - %d - %d isn't published yet", urlSlug,
+                                        day, month,
+                                        year))
+                        .status(HttpStatus.BAD_REQUEST)
                         .build();
             }
+
             return ApiResponse.<PostClientDetailDto>builder()
-                    .message(String.format("Post with id: %s isn't published yet", id))
-                    .status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS)
+                    .message(String.format("Post with slug %s posted at %d - %d - %d not found", urlSlug, day, month,
+                            year))
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<PostClientDetailDto>builder()
+                    .message(String.format("There are more than 1 posts have the same query attributes"))
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .build();
         }
-        return ApiResponse.<PostClientDetailDto>builder()
-                .message(String.format("Post with id: %s not found", id))
-                .status(HttpStatus.NOT_FOUND)
-                .build();
     }
 }

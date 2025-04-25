@@ -11,7 +11,6 @@ import com.dominhdang.blog_app.models.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +35,13 @@ public class PostController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostClientDetailDto>> getDetailClientSidePost(@PathVariable UUID id) {
-        ApiResponse<PostClientDetailDto> response = this.postService.getClientPostDetail(id);
+    @GetMapping("/{year}/{month}/{day}/{slug}")
+    public ResponseEntity<ApiResponse<PostClientDetailDto>> getDetailClientSidePost(
+            @PathVariable("year") int year,
+            @PathVariable("month") int month,
+            @PathVariable("day") int day,
+            @PathVariable("slug") String slug) {
+        ApiResponse<PostClientDetailDto> response = this.postService.getClientPostDetail(year, month, day, slug);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

@@ -23,7 +23,7 @@ public interface PostService {
 
     ApiResponse<PostManageDetailDto> getAdminPostDetail(UUID id);
 
-    ApiResponse<PostClientDetailDto> getClientPostDetail(UUID id);
+    ApiResponse<PostClientDetailDto> getClientPostDetail(int year, int month, int day, String urlSlug);
 
     ApiResponse<List<PostClientItemDto>> getClientPostList(String title, int currentPage, int pageSize);
 
