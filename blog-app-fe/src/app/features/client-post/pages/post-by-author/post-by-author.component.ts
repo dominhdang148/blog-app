@@ -4,13 +4,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { loadPostsAuthor } from 'src/app/store/post/post.actions';
+import { loadPostsAuthor } from 'src/app/store/post/post-list/post-list.actions';
 import {
-  selectPostError,
-  selectPostLoading,
-  selectPostPagination,
-  selectPostsList,
-} from 'src/app/store/post/post.selector';
+  selectPostsError,
+  selectPostsLoading,
+  selectPostsPagination,
+  selectPosts,
+} from 'src/app/store/post/post-list/post-list.selector';
 
 @Component({
   selector: 'app-post-by-author',
@@ -31,10 +31,10 @@ export class PostByAuthorComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    this.post$ = this.store.select(selectPostsList);
-    this.pagination$ = this.store.select(selectPostPagination);
-    this.loading$ = this.store.select(selectPostLoading);
-    this.error$ = this.store.select(selectPostError);
+    this.post$ = this.store.select(selectPosts);
+    this.pagination$ = this.store.select(selectPostsPagination);
+    this.loading$ = this.store.select(selectPostsLoading);
+    this.error$ = this.store.select(selectPostsError);
   }
 
   ngOnInit(): void {
@@ -49,7 +49,7 @@ export class PostByAuthorComponent implements OnInit {
       );
     });
 
-    this.pagination$ = this.store.select(selectPostPagination);
+    this.pagination$ = this.store.select(selectPostsPagination);
   }
 
   ngOnPageChange(newPage: number) {

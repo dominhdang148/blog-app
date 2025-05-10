@@ -38,7 +38,9 @@
             <app-tag-list [tags]="post.tags"></app-tag-list>
           </div>
           <div class="text-end">
-            <a href="#" class="btn btn-primary"> Read more </a>
+            <button (click)="onClickReadDetail()" class="btn btn-primary">
+              Read more
+            </button>
           </div>
         </div>
       </div>

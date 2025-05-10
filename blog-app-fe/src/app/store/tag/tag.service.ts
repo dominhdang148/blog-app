@@ -4,7 +4,6 @@ import { Observable, map } from 'rxjs';
 import { ApiResponse } from 'src/app/core/model/api-response';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { PostItemPlaceholderComponent } from 'src/app/shared/post-list/components/post-item-placeholder/post-item-placeholder.component';
 
 @Injectable({
   providedIn: 'root',

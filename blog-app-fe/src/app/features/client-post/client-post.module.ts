@@ -6,12 +6,14 @@ import { PostByCategoryComponent } from './pages/post-by-category/post-by-catego
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PostByAuthorComponent } from './pages/post-by-author/post-by-author.component';
 import { PostByTagComponent } from './pages/post-by-tag/post-by-tag.component';
+import { PostDetailComponent } from './pages/post-detail/post-detail.component';
 
 @NgModule({
   declarations: [
     PostByCategoryComponent,
     PostByAuthorComponent,
     PostByTagComponent,
+    PostDetailComponent,
   ],
   imports: [CommonModule, SharedModule, ClientPostRoutingModule],
 })

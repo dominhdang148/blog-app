@@ -1,7 +1,9 @@
 import { CategoryState } from './category/category.state';
-import { PostState } from './post/post.state';
+import { PostDetailState } from './post/post-detail/post-detail.state';
+import { PostListState } from './post/post-list/post-list.state';
 
 export interface AppState {
   category: CategoryState;
-  post: PostState;
+  postList: PostListState;
+  postDetail: PostDetailState;
 }

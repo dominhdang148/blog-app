@@ -22,11 +22,11 @@ export const loadPostsTag = createAction(
   props<{ slug: string; currentPage: number; pageSize: number }>(),
 );
 
-export const loadPostSuccess = createAction(
+export const loadPostsSuccess = createAction(
   '[Post] Load Post Success',
   props<{ posts: PostItem[]; pagination: Pagination }>(),
 );
-export const loadPostFailure = createAction(
+export const loadPostsFailure = createAction(
   '[Post] Load Post Failure',
   props<{ error: string }>(),
 );

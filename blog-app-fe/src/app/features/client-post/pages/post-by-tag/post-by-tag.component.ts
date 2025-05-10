@@ -4,13 +4,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { loadPostsTag } from 'src/app/store/post/post.actions';
+import { loadPostsTag } from 'src/app/store/post/post-list/post-list.actions';
 import {
-  selectPostError,
-  selectPostLoading,
-  selectPostPagination,
-  selectPostsList,
-} from 'src/app/store/post/post.selector';
+  selectPosts,
+  selectPostsError,
+  selectPostsLoading,
+  selectPostsPagination,
+} from 'src/app/store/post/post-list/post-list.selector';
 
 @Component({
   selector: 'app-post-by-tag',
@@ -31,13 +31,12 @@ export class PostByTagComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    this.post$ = this.store.select(selectPostsList);
-    this.loading$ = this.store.select(selectPostLoading);
-    this.error$ = this.store.select(selectPostError);
-    this.pagination$ = this.store.select(selectPostPagination);
+    this.post$ = this.store.select(selectPosts);
+    this.loading$ = this.store.select(selectPostsLoading);
+    this.error$ = this.store.select(selectPostsError);
+    this.pagination$ = this.store.select(selectPostsPagination);
   }
   ngOnInit(): void {
-    console.log('Tag page is being called');
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug')!;
       this.store.dispatch(
@@ -48,7 +47,7 @@ export class PostByTagComponent implements OnInit {
         }),
       );
     });
-    this.pagination$ = this.store.select(selectPostPagination);
+    this.pagination$ = this.store.select(selectPostsPagination);
   }
 
   ngOnPageChange(newPage: number) {
