@@ -6,7 +6,7 @@ import {
   loadCategoriesSuccess,
   loadShownOnMenuCategories,
 } from './category.actions';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { catchError, map, mergeMap, of, pipe } from 'rxjs';
 
 @Injectable()
 export class CategoryEffects {

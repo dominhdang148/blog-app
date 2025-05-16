@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { PostService } from './post.service';
+import { PostService } from '../post.service';
 import {
-  loadPostFailure,
-  loadPostSuccess,
+  loadPostsFailure,
+  loadPostsSuccess,
   loadPosts,
   loadPostsAuthor,
   loadPostsCategory,
   loadPostsTag,
-} from './post.actions';
+} from './post-list.actions';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { CategoryService } from '../category/category.service';
-import { AuthorService } from '../author/author.service';
-import { TagService } from '../tag/tag.service';
+import { CategoryService } from '../../category/category.service';
+import { AuthorService } from '../../author/author.service';
+import { TagService } from '../../tag/tag.service';
 
 @Injectable()
-export class PostEffects {
+export class PostListEffects {
   constructor(
     private actions$: Actions,
     private postService: PostService,
@@ -30,9 +30,9 @@ export class PostEffects {
       mergeMap(({ title, currentPage, pageSize }) =>
         this.postService.getPosts(title, currentPage, pageSize).pipe(
           map(({ posts, pagination }) =>
-            loadPostSuccess({ posts, pagination }),
+            loadPostsSuccess({ posts, pagination }),
           ),
-          catchError((error) => of(loadPostFailure({ error: error.message }))),
+          catchError((error) => of(loadPostsFailure({ error: error.message }))),
         ),
       ),
     ),
@@ -47,10 +47,10 @@ export class PostEffects {
           .getPostsByCategory(slug, currentPage, pageSize)
           .pipe(
             map(({ posts, pagination }) =>
-              loadPostSuccess({ posts, pagination }),
+              loadPostsSuccess({ posts, pagination }),
             ),
             catchError((error) =>
-              of(loadPostFailure({ error: error.message })),
+              of(loadPostsFailure({ error: error.message })),
             ),
           ),
       ),
@@ -63,9 +63,9 @@ export class PostEffects {
       mergeMap(({ slug, currentPage, pageSize }) =>
         this.tagService.getPostByTagSlug(slug, currentPage, pageSize).pipe(
           map(({ posts, pagination }) =>
-            loadPostSuccess({ posts, pagination }),
+            loadPostsSuccess({ posts, pagination }),
           ),
-          catchError((error) => of(loadPostFailure({ error: error.message }))),
+          catchError((error) => of(loadPostsFailure({ error: error.message }))),
         ),
       ),
     ),
@@ -79,10 +79,10 @@ export class PostEffects {
           .getPostsByAuthorSlug(slug, currentPage, pageSize)
           .pipe(
             map(({ posts, pagination }) =>
-              loadPostSuccess({ posts, pagination }),
+              loadPostsSuccess({ posts, pagination }),
             ),
             catchError((error) =>
-              of(loadPostFailure({ error: error.message })),
+              of(loadPostsFailure({ error: error.message })),
             ),
           ),
       ),

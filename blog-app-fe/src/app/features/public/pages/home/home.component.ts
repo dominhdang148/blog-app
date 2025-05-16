@@ -4,13 +4,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Pagination } from 'src/app/core/model/pagination';
 import { PostItem } from 'src/app/core/model/post/post-item';
-import { loadPosts } from 'src/app/store/post/post.actions';
+import { loadPosts } from 'src/app/store/post/post-list/post-list.actions';
 import {
-  selectPostError,
-  selectPostLoading,
-  selectPostPagination,
-  selectPostsList,
-} from 'src/app/store/post/post.selector';
+  selectPosts,
+  selectPostsError,
+  selectPostsLoading,
+  selectPostsPagination,
+} from 'src/app/store/post/post-list/post-list.selector';
 
 @Component({
   selector: 'app-home',
@@ -30,10 +30,10 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    this.posts$ = this.store.select(selectPostsList);
-    this.loading$ = this.store.select(selectPostLoading);
-    this.pagination$ = this.store.select(selectPostPagination);
-    this.error$ = this.store.select(selectPostError);
+    this.posts$ = this.store.select(selectPosts);
+    this.loading$ = this.store.select(selectPostsLoading);
+    this.pagination$ = this.store.select(selectPostsPagination);
+    this.error$ = this.store.select(selectPostsError);
   }
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
         }),
       );
     });
-    this.pagination$ = this.store.select(selectPostPagination);
+    this.pagination$ = this.store.select(selectPostsPagination);
   }
 
   ngOnPageChange(newPage: number) {

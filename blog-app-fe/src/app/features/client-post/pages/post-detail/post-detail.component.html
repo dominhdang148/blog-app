@@ -1,0 +1,8 @@
+<div class="p-4">
+  <app-post-detail-item
+    [loading]="loading$ | async"
+    [post]="post$ | async"
+  ></app-post-detail-item>
+  <!-- Author Detail -->
+  <app-author-card></app-author-card>
+</div>

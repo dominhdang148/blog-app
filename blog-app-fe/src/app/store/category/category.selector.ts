@@ -6,15 +6,15 @@ export const selectCategoryState =
 
 export const selectShowOnMenuCategories = createSelector(
   selectCategoryState,
-  (state) => state.categories,
+  (state) => state.categories
 );
 
 export const selectCategoryLoading = createSelector(
   selectCategoryState,
-  (state) => state.loading,
+  (state) => state.loading
 );
 
 export const selectCategoryError = createSelector(
   selectCategoryState,
-  (state) => state.error,
+  (state) => state.error
 );
